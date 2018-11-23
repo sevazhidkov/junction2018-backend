@@ -1,8 +1,9 @@
 # Launch every 5 seconds
 
 import requests
+from sender import answer_message
 
-def find_anomalies(sensors_data, allowed_measurements, threshold=0.15):
+def find_anomalies(sensor_id, sensors_data, allowed_measurements, threshold=0.15):
     measurement_sum = {}
     measurement_count = {}
     for point in sensors_data[1:]:
@@ -19,14 +20,14 @@ def find_anomalies(sensors_data, allowed_measurements, threshold=0.15):
         measurement_average[measurement] = total / count
 
     last_point = sensors_data[0]
-    for measurement, value_data in point['Measurements'].items():
+    for measurement, value_data in last_point['Measurements'].items():
         if measurement not in allowed_measurements:
             continue
         value = value_data['value']
         average_value = measurement_average[measurement]
         diff = abs(1 - (value / average_value))
+        print(sensor_id, measurement, value, average_value, diff, diff > threshold)
         if diff > threshold:
-            print(measurement, value, average_value, diff)
             return True
 
     return False
@@ -47,5 +48,5 @@ for sensor in sensors:
         'https://apigtw.vaisala.com/hackjunction2018/saunameasurements/latest?SensorID={}&limit=100'
         .format(sensor['id'])
     ).json()
-    if find_anomalies(response, sensor['allowed_measurements'], sensor['threshold']):
-        print(sensor)
+    if find_anomalies(sensor['id'], response, sensor['allowed_measurements'], sensor['threshold']):
+        answer_message(sensor['message_type'])
