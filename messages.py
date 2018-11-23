@@ -13,5 +13,7 @@ def last_message(redis: Redis, user_id):
     return redis.lpop(user_id)
 
 
-def save_message(redis: Redis, user_id, message_id):
-    redis.lpush(user_id, message_id)
+def save_message(redis: Redis, user_id, message_id, to_format=None):
+    if to_format is None:
+        to_format = []
+    redis.lpush(user_id, messages_dict[message_id].format(*to_format))
