@@ -1,8 +1,10 @@
 import os
 
 from flask import Flask, jsonify
+from redis import Redis
 
 app = Flask(__name__)
+redis = Redis(db=1)
 
 
 @app.route('/')
