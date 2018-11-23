@@ -1,11 +1,16 @@
+import os
+
 from flask import Flask, jsonify
+from redis import Redis
 
 app = Flask(__name__)
+redis = Redis(db=1)
 
 
 @app.route('/')
-def main():
+def main_handler():
     return jsonify({'success': True})
 
 
-app.run()
+if int(os.environ.get('DEBUG', 1)) == 1:
+    app.run(debug=True)
