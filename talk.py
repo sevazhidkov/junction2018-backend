@@ -1,13 +1,16 @@
 import os
 import dialogflow_v2 as dialogflow
 
+import measures
+
+PROJECT_ID = 'sauna-v3'
+
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = './google_creds.json'
 
 def detect_intent_texts(project_id, session_id, texts, language_code='en'):
     session_client = dialogflow.SessionsClient()
 
-    session = session_client.session_path(project_id, session_id)
-    print('Session path: {}\n'.format(session))
+    session = session_client.session_path(PROJECT_ID, 0)
 
     for text in texts:
         text_input = dialogflow.types.TextInput(
@@ -28,7 +31,28 @@ def detect_intent_texts(project_id, session_id, texts, language_code='en'):
 
 
 def analyze_message(text):
-    pass
+    session_client = dialogflow.SessionsClient()
+    session = session_client.session_path(PROJECT_ID, 0)
+
+    text_input = dialogflow.types.TextInput(
+        text=text, language_code='en')
+
+    query_input = dialogflow.types.QueryInput(text=text_input)
+
+    response = session_client.detect_intent(
+        session=session, query_input=query_input)
+
+    if not response.query_result.intent.display_name or response.query_result.intent.display_name == 'small_talk':
+        type = 'text'
+    else:
+        type = response.query_result.intent.display_name
+
+    text = response.query_result.fulfillment_text
+
+    # TODO: Replacements
 
 
-detect_intent_texts('sauna-v3', 0, ['how are you', 'karaoke please'])
+    return {'type': type, 'text': text}
+
+
+# print(analyze_message('how are you'))
