@@ -25,7 +25,7 @@ def reset_handler():
 @app.route('/measurements')
 def measure_handler():
     raw_response = {x: y() for x, y in measurements.items()}
-    response = {x: '%.1f' % round(y(), 1) for x, y in raw_response.items()}
+    response = {x: '%.1f' % round(y, 1) for x, y in raw_response.items()}
     redis.set('m_cache', json.dumps(response))
 
     current_condition = None
