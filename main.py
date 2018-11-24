@@ -64,9 +64,7 @@ def m_cache_handler():
 
 @app.route('/last_message')
 def last_message_handler():
-    last_message = None
-    while not last_message:
-        last_message = messages.last_message(redis, 0)
+    last_message = messages.last_message(redis, 0)
     message = last_message.decode('utf-8')
     print(message)
     if message.startswith('{'):
@@ -90,7 +88,9 @@ def last_measurement_handler():
 
 @app.route('/talk')
 def talk_handler():
-    response = analyze_message(request.args.get('message'))
+    message = request.args.get('message')
+    print(message)
+    response = analyze_message(message)
     messages.save_message(redis, 0, json.dumps(response))
 
     return jsonify({'success': True})
