@@ -53,5 +53,10 @@ def last_measurements_handler():
     })
 
 
+@app.route('/last_measurement')
+def last_measurement_handler():
+    return jsonify({'measurement': get_measurement(get_sensor_data('Bench2')[0], 'Enthalpy')})
+
+
 if int(os.environ.get('DEBUG', 1)) == 1:
     app.run(debug=True)
