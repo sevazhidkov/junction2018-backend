@@ -49,7 +49,7 @@ def analyze_message(text):
 
     text = response.query_result.fulfillment_text
 
-    for measurement, getter in measures.measurements:
+    for measurement, getter in measures.measurements.items():
         value = getter()
         text = text.replace('{' + measurement + '}', str(value))
 
