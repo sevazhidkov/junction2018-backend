@@ -97,12 +97,17 @@ def talk_handler():
 
     return jsonify({'success': True})
 
+
 @app.after_request
 def after_request(response):
     timestamp = strftime('[%Y-%b-%d %H:%M]')
-    logging.error('%s %s %s %s %s %s', timestamp, request.remote_addr, request.method, request.scheme, request.full_path, response.status)
+    logger.info('%s %s %s %s %s %s', timestamp, request.remote_addr, request.method, request.scheme, request.full_path,
+                response.status)
     return response
 
 
 if int(os.environ.get('DEBUG', 1)) == 1:
     app.run(debug=True)
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
