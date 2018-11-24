@@ -109,4 +109,4 @@ def after_request(response):
 if int(os.environ.get('DEBUG', 1)) == 1:
     app.run(debug=True)
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
