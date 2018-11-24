@@ -40,7 +40,7 @@ sensors = [
     {'id': 'Bench1', 'threshold': 0.15, 'message_type': 'too_many_person',
          'allowed_measurements': ['Carbon Dioxide concentration']},
     {'id': 'Bench1', 'threshold': 0.03, 'message_type': 'new_person',
-         'allowed_measurements': ['Carbon Dioxide concentration']},
+         'allowed_measurements': ['Oxygen concentration']},
 ]
 
 for sensor in sensors:
