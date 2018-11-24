@@ -16,7 +16,7 @@ def main_handler():
 
 @app.route('/measurements')
 def measure_handler():
-    return jsonify({x: y() for x, y in measurements.item()})
+    return jsonify({x: y() for x, y in measurements.items()})
 
 
 @app.route('/last_message')
