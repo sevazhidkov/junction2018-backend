@@ -1,8 +1,9 @@
+import json
 import os
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, redirect, url_for
 from redis import Redis
-from measures import measurements
+from measures import measurements, get_measurement, get_sensor_data, reset
 import messages
 
 app = Flask(__name__)
@@ -22,12 +23,39 @@ def reset_handler():
 
 @app.route('/measurements')
 def measure_handler():
-    return jsonify({x: '%.1f' % round(y(), 1) for x, y in measurements.items()})
+    response = {x: '%.1f' % round(y(), 1) for x, y in measurements.items()}
+    redis.set('m_cache', json.dumps(response))
+    redis.expire('m_cache', 60 * 30)
+
+    reset()
+
+    return jsonify(response)
+
+
+@app.route('/m_cache')
+def m_cache_handler():
+    r_resp = redis.get('m_cache')
+    if r_resp:
+        return jsonify(json.loads(redis.get('m_cache').decode('utf-8')))
+    else:
+        return redirect(url_for('measure_handler'), code=302)
 
 
 @app.route('/last_message')
 def last_message_handler():
-    return jsonify({'message': messages.last_message(redis, 0).decode('utf-8')})
+    return jsonify({'message': messages.last_message(redis, 0).decode('utf-8'), 'type': 'text'})
+
+
+@app.route('/last_measurements')
+def last_measurements_handler():
+    return jsonify({
+        'measurements': list(map(lambda x: get_measurement(x, 'Enthalpy'), reversed(get_sensor_data('Bench2', 100))))
+    })
+
+
+@app.route('/last_measurement')
+def last_measurement_handler():
+    return jsonify({'measurement': get_measurement(get_sensor_data('Bench2')[0], 'Enthalpy')})
 
 
 if int(os.environ.get('DEBUG', 1)) == 1:
