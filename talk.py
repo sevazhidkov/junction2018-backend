@@ -49,8 +49,9 @@ def analyze_message(text):
 
     text = response.query_result.fulfillment_text
 
-    # TODO: Replacements
-
+    for measurement, getter in measures.measurements:
+        value = getter()
+        text = text.replace('{' + measurement + '}', str(value))
 
     return {'type': type, 'message': text}
 
