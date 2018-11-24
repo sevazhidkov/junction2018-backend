@@ -1,7 +1,7 @@
 import json
 import os
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, redirect, url_for
 from redis import Redis
 from measures import measurements
 import messages
@@ -32,7 +32,11 @@ def measure_handler():
 
 @app.route('/m_cache')
 def m_cache_handler():
-    return jsonify(json.loads(redis.get('m_cache').decode('utf-8')))  # Add saving to cache in measurements handler
+    r_resp = redis.get('m_cache')
+    if r_resp:
+        return jsonify(json.loads(redis.get('m_cache').decode('utf-8')))
+    else:
+        return redirect(url_for('measure_handler'), code=302)
 
 
 @app.route('/last_message')
