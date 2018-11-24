@@ -8,7 +8,7 @@ def get_sensor_data(sensor_id, n=1):
 
 
 def get_measurement(sensor_data, measurement='Temperature'):
-    return round(sensor_data['Measurements'][measurement]['value'], 1)
+    return sensor_data['Measurements'][measurement]['value']
 
 
 def temp_stove():
