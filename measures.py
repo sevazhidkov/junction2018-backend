@@ -18,7 +18,7 @@ def temp_stove():
 
 
 def temp_inside():
-    return get_measurement(get_sensor_data('Ceiling2')[0])
+    return get_measurement(get_sensor_data('Bench2')[0])
 
 
 def oxygen():
@@ -27,3 +27,11 @@ def oxygen():
 
 def temp_outdoor():
     return get_measurement(get_sensor_data('Outdoor1')[0])
+
+
+measurements = {
+    'stove': temp_stove,
+    'inside': temp_inside,
+    'oxygen': oxygen,
+    'outdoor': temp_outdoor
+}
