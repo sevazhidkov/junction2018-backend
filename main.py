@@ -1,3 +1,4 @@
+import json
 import os
 
 from flask import Flask, jsonify
@@ -22,7 +23,16 @@ def reset_handler():
 
 @app.route('/measurements')
 def measure_handler():
-    return jsonify({x: '%.1f' % round(y(), 1) for x, y in measurements.items()})
+    response = {x: '%.1f' % round(y(), 1) for x, y in measurements.items()}
+    redis.set('m_cache', json.dumps(response))
+    redis.expire('m_cache', 60*30)
+
+    return jsonify(response)
+
+
+@app.route('/m_cache')
+def m_cache_handler():
+    return jsonify(json.loads(redis.get('m_cache').decode('utf-8')))  # Add saving to cache in measurements handler
 
 
 @app.route('/last_message')
