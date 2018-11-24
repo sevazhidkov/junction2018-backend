@@ -69,6 +69,8 @@ def talk_handler():
     response = analyze_message(request.args.get('message'))
     messages.save_message(redis, 0, json.dumps(response))
 
+    return jsonify({'success': True})
+
 
 if int(os.environ.get('DEBUG', 1)) == 1:
     app.run(debug=True)
