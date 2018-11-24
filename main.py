@@ -3,7 +3,7 @@ import os
 
 from flask import Flask, jsonify, redirect, url_for
 from redis import Redis
-from measures import measurements, get_measurement, get_sensor_data
+from measures import measurements, get_measurement, get_sensor_data, reset
 import messages
 
 app = Flask(__name__)
@@ -25,7 +25,9 @@ def reset_handler():
 def measure_handler():
     response = {x: '%.1f' % round(y(), 1) for x, y in measurements.items()}
     redis.set('m_cache', json.dumps(response))
-    redis.expire('m_cache', 60*30)
+    redis.expire('m_cache', 60 * 30)
+
+    reset()
 
     return jsonify(response)
 

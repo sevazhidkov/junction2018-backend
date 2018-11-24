@@ -1,5 +1,7 @@
 import requests
 
+temp_data = {}
+
 
 def get_sensor_data(sensor_id, n=1):
     return requests.get(
@@ -18,7 +20,9 @@ def temp_stove():
 
 
 def temp_inside():
-    return get_measurement(get_sensor_data('Bench2')[0])
+    if 'Bench2' not in temp_data:
+        temp_data['Bench2'] = get_sensor_data('Bench2')
+    return get_measurement(temp_data['Bench2'][0])
 
 
 def oxygen():
@@ -33,10 +37,22 @@ def highest_temperature():
     return max(map(get_measurement, get_sensor_data('Bench2', 1000)))
 
 
+def enthalpy():
+    if 'Bench2' not in temp_data:
+        temp_data['Bench2'] = get_sensor_data('Bench2')
+    return get_measurement(temp_data['Bench2'][0], 'Enthalpy')
+
+
+def reset():
+    global temp_data
+    temp_data = {}
+
+
 measurements = {
     'stove': temp_stove,
     'inside': temp_inside,
     'oxygen': oxygen,
     'outdoor': temp_outdoor,
-    'highest_temperature': highest_temperature
+    'highest_temperature': highest_temperature,
+    'enthalpy': enthalpy
 }
