@@ -64,6 +64,9 @@ def m_cache_handler():
 
 @app.route('/last_message')
 def last_message_handler():
+    last_message = None
+    while not last_message:
+        last_message = messages.last_message(redis, 0)
     message = messages.last_message(redis, 0).decode('utf-8')
     if message.startswith('{'):
         message = json.loads(message)
