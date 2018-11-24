@@ -67,7 +67,8 @@ def last_message_handler():
     last_message = None
     while not last_message:
         last_message = messages.last_message(redis, 0)
-    message = messages.last_message(redis, 0).decode('utf-8')
+    message = last_message.decode('utf-8')
+    print(message)
     if message.startswith('{'):
         message = json.loads(message)
         return jsonify(message)
