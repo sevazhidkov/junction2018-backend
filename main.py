@@ -1,10 +1,11 @@
 import json
 import os
 
-from flask import Flask, jsonify, redirect, url_for
+from flask import Flask, jsonify, redirect, url_for, request
 from redis import Redis
 from measures import measurements, get_measurement, get_sensor_data, reset
 import messages
+from talk import analyze_message
 
 app = Flask(__name__)
 redis = Redis(db=1)
@@ -43,7 +44,12 @@ def m_cache_handler():
 
 @app.route('/last_message')
 def last_message_handler():
-    return jsonify({'message': messages.last_message(redis, 0).decode('utf-8'), 'type': 'text'})
+    message = messages.last_message(redis, 0).decode('utf-8')
+    if message.startswith('{'):
+        message = json.loads(message)
+        return jsonify(message)
+    else:
+        return jsonify({'message': message, 'type': 'text'})
 
 
 @app.route('/last_measurements')
@@ -56,6 +62,12 @@ def last_measurements_handler():
 @app.route('/last_measurement')
 def last_measurement_handler():
     return jsonify({'measurement': get_measurement(get_sensor_data('Bench2')[0], 'Enthalpy')})
+
+
+@app.route('/talk')
+def talk_handler():
+    response = analyze_message(request.json['message'])
+    messages.save_message(redis, 0, json.dumps(response))
 
 
 if int(os.environ.get('DEBUG', 1)) == 1:

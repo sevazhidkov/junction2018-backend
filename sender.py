@@ -3,6 +3,7 @@ from redis import Redis
 
 redis = Redis(db=1)
 
+
 def answer_message(message_type):
     if message_type == 'door_open':
         save_message(redis, 0, 'Door is open! Close it right now.')
