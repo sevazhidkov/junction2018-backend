@@ -1,11 +1,15 @@
 import os
+import json
 import dialogflow_v2 as dialogflow
+from redis import Redis
 
 import measures
 
 PROJECT_ID = 'sauna-v3'
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = './google_creds.json'
+
+redis = Redis(db=1)
 
 def detect_intent_texts(project_id, session_id, texts, language_code='en'):
     session_client = dialogflow.SessionsClient()
@@ -49,8 +53,9 @@ def analyze_message(text):
 
     text = response.query_result.fulfillment_text
 
-    # TODO: Replacements
-
+    measurements = json.loads(redis.get('m_cache').decode('utf-8'))
+    for measurement, value in measurements.items():
+        text = text.replace('-' + measurement + '-', str(value))
 
     return {'type': type, 'message': text}
 
