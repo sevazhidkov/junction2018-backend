@@ -20,9 +20,11 @@ def temp_stove():
 
 
 def temp_inside():
-    if 'Bench2' not in temp_data:
-        temp_data['Bench2'] = get_sensor_data('Bench2')
-    return get_measurement(temp_data['Bench2'][0])
+    bench2 = temp_data.get('Bench2', None)
+    if bench2 is None:
+        bench2 = get_sensor_data('Bench2')
+        temp_data['Bench2'] = bench2
+    return get_measurement(bench2[0])
 
 
 def oxygen():
@@ -38,9 +40,11 @@ def highest_temperature():
 
 
 def enthalpy():
-    if 'Bench2' not in temp_data:
-        temp_data['Bench2'] = get_sensor_data('Bench2')
-    return get_measurement(temp_data['Bench2'][0], 'Enthalpy')
+    bench2 = temp_data.get('Bench2', None)
+    if bench2 is None:
+        bench2 = get_sensor_data('Bench2')
+        temp_data['Bench2'] = bench2
+    return get_measurement(bench2[0], 'Enthalpy')
 
 
 def reset():
