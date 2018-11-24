@@ -48,7 +48,7 @@ def last_message_handler():
 
 @app.route('/last_measurements')
 def last_measurements_handler():
-    return jsonify({'measurements': list(map(get_measurement, get_sensor_data('Bench2', 100)))})
+    return jsonify({'measurements': list(map(get_measurement, reversed(get_sensor_data('Bench2', 100))))})
 
 
 if int(os.environ.get('DEBUG', 1)) == 1:
