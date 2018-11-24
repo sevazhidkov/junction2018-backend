@@ -1,12 +1,15 @@
 import os
 import json
 import dialogflow_v2 as dialogflow
+from redis import Redis
 
 import measures
 
 PROJECT_ID = 'sauna-v3'
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = './google_creds.json'
+
+redis = Redis(db=1)
 
 def detect_intent_texts(project_id, session_id, texts, language_code='en'):
     session_client = dialogflow.SessionsClient()
