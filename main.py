@@ -3,7 +3,7 @@ import os
 
 from flask import Flask, jsonify, redirect, url_for, request
 from redis import Redis
-from measures import measurements, get_measurement, get_sensor_data, reset
+from measures import measurements, get_measurement, get_sensor_data, reset_temp
 import messages
 from talk import analyze_message
 
@@ -24,11 +24,31 @@ def reset_handler():
 
 @app.route('/measurements')
 def measure_handler():
-    response = {x: '%.1f' % round(y(), 1) for x, y in measurements.items()}
+    raw_response = {x: y() for x, y in measurements.items()}
+    response = {x: '%.1f' % round(y(), 1) for x, y in raw_response.items()}
     redis.set('m_cache', json.dumps(response))
-    redis.expire('m_cache', 60 * 30)
 
-    reset()
+    current_condition = None
+    if raw_response['enthalpy'] <= 100:
+        current_condition = "Wait a bit more"
+    elif 100 < raw_response['enthalpy'] <= 200:
+        current_condition = "Just heated"
+    elif 200 < raw_response['enthalpy'] <= 300:
+        current_condition = "For oldy"
+    elif 300 < raw_response['enthalpy'] <= 400:
+        current_condition = "Just right"
+    elif 400 < raw_response['enthalpy'] <= 500:
+        current_condition = "Hot!"
+    elif 500 < raw_response['enthalpy'] <= 600:
+        current_condition = "Hardcore"
+    elif raw_response['enthalpy'] > 600:
+        current_condition = "I'd call 112"
+    redis.set('current_condition', current_condition)
+
+    redis.expire('m_cache', 60 * 30)
+    redis.expire('current_condition', 60 * 30)
+
+    reset_temp()
 
     return jsonify(response)
 

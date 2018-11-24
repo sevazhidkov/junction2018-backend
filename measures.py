@@ -47,7 +47,7 @@ def enthalpy():
     return get_measurement(bench2[0], 'Enthalpy')
 
 
-def reset():
+def reset_temp():
     global temp_data
     temp_data = {}
 
