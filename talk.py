@@ -49,9 +49,9 @@ def analyze_message(text):
 
     text = response.query_result.fulfillment_text
 
-    for measurement, getter in measures.measurements.items():
-        value = getter()
-        text = text.replace('{' + measurement + '}', str(value))
+    measurements = json.loads(redis.get('m_cache').decode('utf-8'))
+    for measurement, value in measurements.items():
+        text = text.replace('-' + measurement + '-', str(value))
 
     return {'type': type, 'message': text}
 
