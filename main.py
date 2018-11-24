@@ -27,7 +27,7 @@ def measure_handler():
 
 @app.route('/last_message')
 def last_message_handler():
-    return {'message': messages.last_message(redis, 0)}
+    return jsonify({'message': messages.last_message(redis, 0)})
 
 
 if int(os.environ.get('DEBUG', 1)) == 1:
