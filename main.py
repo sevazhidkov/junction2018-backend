@@ -66,7 +66,7 @@ def last_measurement_handler():
 
 @app.route('/talk')
 def talk_handler():
-    response = analyze_message(request.json['message'])
+    response = analyze_message(request.args.get('message'))
     messages.save_message(redis, 0, json.dumps(response))
 
 
