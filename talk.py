@@ -42,10 +42,10 @@ def analyze_message(text):
     response = session_client.detect_intent(
         session=session, query_input=query_input)
 
-    if not response.query_result.intent.display_name or response.query_result.intent.display_name == 'small_talk':
-        type = 'text'
+    if response.query_result.intent.display_name == 'karaoke':
+        type = 'karaoke'
     else:
-        type = response.query_result.intent.display_name
+        type = 'text'
 
     text = response.query_result.fulfillment_text
 
