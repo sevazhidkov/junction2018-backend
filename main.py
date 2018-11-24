@@ -1,5 +1,7 @@
 import json
+import logging
 import os
+from time import strftime
 
 from flask import Flask, jsonify, redirect, url_for, request
 from redis import Redis
@@ -94,6 +96,12 @@ def talk_handler():
     messages.save_message(redis, 0, json.dumps(response))
 
     return jsonify({'success': True})
+
+@app.after_request
+def after_request(response):
+    timestamp = strftime('[%Y-%b-%d %H:%M]')
+    logging.error('%s %s %s %s %s %s', timestamp, request.remote_addr, request.method, request.scheme, request.full_path, response.status)
+    return response
 
 
 if int(os.environ.get('DEBUG', 1)) == 1:
