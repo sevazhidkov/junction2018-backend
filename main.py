@@ -22,7 +22,7 @@ def reset_handler():
 
 @app.route('/measurements')
 def measure_handler():
-    return jsonify({x: y() for x, y in measurements.items()})
+    return jsonify({x: str(y()) for x, y in measurements.items()})
 
 
 @app.route('/last_message')
