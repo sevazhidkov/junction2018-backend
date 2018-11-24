@@ -52,7 +52,7 @@ def analyze_message(text):
     # TODO: Replacements
 
 
-    return {'type': type, 'text': text}
+    return {'type': type, 'message': text}
 
 
 # print(analyze_message('how are you'))
