@@ -14,6 +14,12 @@ def main_handler():
     return jsonify({'success': True})
 
 
+@app.route('/reset')
+def reset_handler():
+    redis.delete(0)
+    return jsonify({'success': True})
+
+
 @app.route('/measurements')
 def measure_handler():
     return jsonify({x: y() for x, y in measurements.items()})
