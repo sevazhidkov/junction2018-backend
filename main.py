@@ -43,7 +43,7 @@ def m_cache_handler():
 
 @app.route('/last_message')
 def last_message_handler():
-    return jsonify({'message': messages.last_message(redis, 0).decode('utf-8')})
+    return jsonify({'message': messages.last_message(redis, 0).decode('utf-8'), 'type': 'text'})
 
 
 @app.route('/last_measurements')
