@@ -8,7 +8,7 @@ def get_sensor_data(sensor_id, n=1):
 
 
 def get_measurement(sensor_data, measurement='Temperature'):
-    return sensor_data['Measurements'][measurement]['value']
+    return round(sensor_data['Measurements'][measurement]['value'], 1)
 
 
 def temp_stove():
@@ -29,9 +29,14 @@ def temp_outdoor():
     return get_measurement(get_sensor_data('Outdoor1')[0])
 
 
+def highest_temperature():
+    return max(map(get_measurement, get_sensor_data('Bench2', 1000)))
+
+
 measurements = {
     'stove': temp_stove,
     'inside': temp_inside,
     'oxygen': oxygen,
-    'outdoor': temp_outdoor
+    'outdoor': temp_outdoor,
+    'highest_temperature': highest_temperature
 }
